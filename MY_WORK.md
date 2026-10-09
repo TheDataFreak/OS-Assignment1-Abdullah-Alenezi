@@ -237,7 +237,7 @@
 
 **Your Answer:** *(5-7 sentences)*
 
-[Write your answer here.]
+Through this assignment, I gained a practical understanding of how Java manages concurrent execution using threads and the Runnable interface. I learned how to instantiate threads using new Thread(runnable) and control their lifecycle with methods like Thread.start() to begin execution and Thread.join() to synchronize thread completion with the main scheduler. Simulating execution delays with Thread.sleep() clearly demonstrated how CPU time slices work in real operating systems. Additionally, I observed how multiple threads can share objects and state while maintaining independent execution paths.
 
 ## Question 2: What was the most challenging part of this assignment?
 
@@ -245,7 +245,7 @@
 
 **Your Answer:** *(5-7 sentences)*
 
-[Write your answer here.]
+The most challenging part of this assignment was implementing Feature 3, which required tracking accurate waiting and turnaround times across multiple thread preemptions. Because processes are periodically context-switched back into the ready queue when their quantum expires, calculating the exact waiting time required recording precise timestamps for initial process arrival and final completion. Ensuring that System.currentTimeMillis() captured the true finish time across both standard quantum completion and the runToCompletion() execution path needed careful code placement. Additionally, formatting the summary metrics into an aligned console table was a detailed task.
 
 ## Question 3: How did you overcome the challenges you faced?
 
@@ -253,15 +253,13 @@
 
 **Your Answer:** *(5-7 sentences)*
 
-[Write your answer here.]
-
+I overcame these challenges by systematically testing small sections of code and using print statements to track variable values during execution. I re-read the starter code thoroughly to understand how Process instances were created, queued, and mapped to Java Thread objects. When timing calculations initially showed discrepancies, I traced thread execution step-by-step to identify where timestamps were being recorded. Consulting the Java documentation for System.currentTimeMillis() and standard formatting specifiers helped me construct an accurate and clean summary table.
 ## Question 4: How can you apply multithreading concepts in real-world applications?
 
 > 💡 **TIP:** Use real applications you know (web browser, game, mobile app, music player) and connect each one to what you built here.
 
 **Your Answer:** *(5-7 sentences)*
-
-[Write your answer here.]
+Multithreading concepts are fundamental to developing responsive, high-performance real-world software applications. For instance, web servers like Apache or Tomcat handle incoming HTTP requests by assigning each request to an individual thread, allowing concurrent processing without blocking other users. Similarly, graphical user interface (GUI) applications use background threads to perform heavy computations or network operations while keeping the user interface responsive. Mobile applications also rely heavily on background threading to fetch data from APIs without freezing the screen.
 
 ### Optional: What would you like to learn more about?
 
@@ -293,7 +291,7 @@
 
 **Your Answer:** *(3-5 sentences)*
 
-[Write your answer here.]
+A process is an independent executing program with its own dedicated memory space, whereas a thread is the smallest unit of execution inside a process that shares memory and resources with other threads of the same process. Creating threads incurs significantly lower overhead and enables faster inter-thread communication compared to separate processes. In our assignment, we used Java Thread objects inside SchedulerSimulation rather than creating operating system processes because lightweight threads allow simple shared-memory queue management and fast context switches. In SchedulerSimulation.java, line Thread thread = new Thread(process); inside addProcessToQueue() explicitly binds a simulated process to an active Java thread.
 
 ## Question 2: Ready Queue Behavior
 
@@ -304,17 +302,20 @@
 > 💡 **TIP:** Pick a process with a large burst time (e.g., more than 2 × time quantum) and count how many "added to ready queue" lines it has after the first one. Search your console for its name (e.g., `P3`).
 
 **Your Answer:** *(3-5 sentences)*
-
-[Write your answer here.]
+In Round-Robin scheduling, when a process does not finish its execution within the allocated time quantum, it is preempted, paused, and placed back at the end of the Ready Queue (FIFO order) so that other waiting processes can access the CPU. In my run with student ID 442370172, process P1 had a large burst time and yielded the CPU multiple times, being re-queued 3 times before finally finishing execution. Re-queueing ensures fairness and prevents long processes from monopolizing CPU time, giving every process equal access to compute resources.
 
 Example from my output:
 ```
-[Paste a relevant snippet from your program output here showing a process being re-queued]
+▶ P1 executing quantum [2000ms] 
+  ⚡ Quantum progress: [███████████████] 100%
+  ⏸ P1 completed quantum 2000ms │ Overall progress: [██████░░░░░░░░░░░░░░] 33%
+     Remaining time: 4000ms
+  ↻ P1 yields CPU for context switch
+  ➕ P1 added to ready queue │ Burst time: 6000ms │ Priority: 7
 ```
 
 **Explanation of example:**
-[Explain what is happening in the output snippet you pasted.]
-
+In this snippet, P1 executes for its full 2000ms quantum but still has 4000ms of remaining time. The scheduler pauses P1, logs a context switch yield, and places P1 back into the Ready Queue so the next thread can execute.
 ## Question 3: Thread Lifecycle
 
 **Question**: A thread goes through these states: **New**, **Runnable**, **Running**, **Waiting**, **Terminated**. Walk through these states for one process (e.g., P1) from your simulation. For each state, explain **when** P1 enters it and **which line or method call** triggers the transition (`Thread.start()`, `Thread.join()`, `Thread.sleep()`, etc.).
@@ -323,15 +324,13 @@ Example from my output:
 
 **Your Answer:** *(3-5 sentences overall; one short explanation per state)*
 
-1. **New**: [When is P1 in the New state?]
+1. **New**: P1 enters the New state when its thread object is instantiated in addProcessToQueue() via Thread thread = new Thread(process);.
 
-2. **Runnable**: [When does P1 become Runnable?]
+2. **Runnable**: P1 transitions to Runnable immediately after currentThread.start() is invoked in the main scheduler loop, making it ready for CPU execution.
+3. **Running**: P1 enters the Running state when the OS thread scheduler allocates CPU time to it and executes its run() method.
+4. **Waiting**: P1 enters the Timed_Waiting state when it executes Thread.sleep(stepTime) inside run() to simulate quantum progress; meanwhile, the main thread enters Waiting state on currentThread.join().
 
-3. **Running**: [When is P1 Running?]
-
-4. **Waiting**: [When and why would a thread be Waiting?]
-
-5. **Terminated**: [When is P1 Terminated?]
+5. **Terminated**: P1 enters the Terminated state when its run() method completes execution and returns after all remaining burst time reaches 0.
 
 ## Question 4: Real-World Applications
 
@@ -341,19 +340,25 @@ Example from my output:
 
 **Your Answer:** *(3-5 sentences per example)*
 
-### Example 1 (operating-system level): [Name of scenario]
 
-**Description**:
-[Describe the real-world scenario.]
+### Example 1 (operating-system level): CPU Scheduling in Interactive OS
+
+Description:
+Operating systems like Linux or Windows use multi-threaded Round-Robin (or Multilevel Feedback Queue) scheduling to share CPU cores among hundreds of running applications (e.g., text editor, music player, background services).
+
+Why Round-Robin works well here:
+Round-Robin ensures responsiveness and fairness. By assigning small time quanta to each application thread, the OS creates the illusion of simultaneous execution and prevents any single process from freezing the entire system.
 
 **Why Round-Robin works well here**:
 [Fairness, responsiveness, predictability?]
 
-### Example 2: [Name of application/scenario]
+### Example 2: Multi-Threaded Web Server Request Handler
 
-**Description**:
-[Describe the real-world scenario or application.]
+Description:
+A web server (such as Nginx or Tomcat) receiving thousands of user HTTP requests simultaneously delegates client requests to worker threads in a thread pool.
 
+Why Round-Robin works well here:
+Round-Robin scheduling among worker threads provides predictable response times and prevents long database queries from starving small client requests, maintaining a balanced quality of service across all connected clients.
 **Why Round-Robin works well here**:
 [Fairness, responsiveness, predictability?]
 
