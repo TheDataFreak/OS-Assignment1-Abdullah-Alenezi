@@ -33,7 +33,7 @@
 | **Student ID** | [443990026] |
 | **University Email** | [443990026@std.psau.edu.sa |
 | **GitHub Username** | [TheDataFreak] |
-| **Repository Link** | [[](https://github.com/TheDataFreak/OS-Assignment1-Abdullah-Alenezi)] |
+| **Repository Link** | [[https://github.com/TheDataFreak/OS-Assignment1-Abdullah-Alenezi](https://github.com/TheDataFreak/OS-Assignment1-Abdullah-Alenezi)] |
  
 ---
 
