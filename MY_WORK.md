@@ -29,9 +29,9 @@
 
 | Field | Your Answer |
 |-------|-------------|
-| **Full Name** |  Nawaf Majed Al-Wadaani |
-| **Student ID** |   442370172 |
-| **University Email** |  442370172@std.psau.edu.sa |
+| **Full Name** |  Abdullah Hamoud Alenezi |
+| **Student ID** |   443990026 |
+| **University Email** |  443990026@std.psau.edu.sa |
 | **GitHub Username** | nawffmaged |
 | **Repository Link** |https://github.com/nawffmaged/OS-Assignment1-Nawaf-al-wadaani|
  
